@@ -20,7 +20,10 @@ package com.netflix.spinnaker.clouddriver.artifacts;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.clouddriver.artifacts.config.ArtifactCredentials;
 import com.netflix.spinnaker.kork.artifacts.model.Artifact;
+import java.util.Arrays;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
@@ -30,6 +33,7 @@ import java.io.InputStream;
 
 @Component
 public class ArtifactDownloader {
+  private final Logger log = LoggerFactory.getLogger(getClass());
   final private ArtifactCredentialsRepository artifactCredentialsRepository;
 
   final private ObjectMapper objectMapper;
@@ -44,6 +48,8 @@ public class ArtifactDownloader {
   }
 
   public InputStream download(Artifact artifact) throws IOException {
+    log.warn("TRYING TO DOWNLOAD ARTIFACT {}", artifact);
+    log.warn(Arrays.toString(Thread.currentThread().getStackTrace()));
     ArtifactCredentials credentials = artifactCredentialsRepository.getAllCredentials()
         .stream()
         // todo(lwander) remove isEmpty once the UI properly supports fetching artifact accounts

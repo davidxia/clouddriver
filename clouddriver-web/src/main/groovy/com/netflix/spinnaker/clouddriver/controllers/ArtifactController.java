@@ -62,6 +62,7 @@ public class ArtifactController {
   String fetch(@RequestParam("artifactAccount") String artifactAccount,
       @RequestParam("type") String type,
       @RequestParam("reference") String reference) {
+    log.warn("ARTIFACT ACCOUNT {}, TYPE {}, REFERENCE {}", artifactAccount, type, reference);
     if (artifactDownloader == null) {
       throw new IllegalStateException("Artifacts have not been enabled. Enable them using 'artifacts.enabled' in clouddriver");
     }
@@ -71,6 +72,7 @@ public class ArtifactController {
         .artifactAccount(artifactAccount)
         .reference(reference)
         .build();
+    log.warn("ARTIFACT HERE IS {}", artifact);
 
     try {
       return IOUtils.toString(artifactDownloader.download(artifact));

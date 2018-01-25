@@ -99,7 +99,9 @@ public class GitHubArtifactCredentials implements ArtifactCredentials {
       .build();
     Response metadataResponse = okHttpClient.newCall(metadataRequest).execute();
     String body = metadataResponse.body().string();
+    log.warn("METADATA RESPONSE IS {}", body);
     ContentMetadata metadata = objectMapper.readValue(body, ContentMetadata.class);
+    log.warn("METADATA IS {}", metadata);
     Request downloadRequest = requestBuilder
       .url(metadata.getDownloadUrl())
       .build();
