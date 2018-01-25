@@ -27,16 +27,15 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Request.Builder;
 import com.squareup.okhttp.Response;
-import lombok.extern.slf4j.Slf4j;
-import lombok.Data;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Component;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 
 @Slf4j
 @Data
@@ -104,7 +103,11 @@ public class GitHubArtifactCredentials implements ArtifactCredentials {
       .url(metadata.getDownloadUrl())
       .build();
     Response downloadResponse = okHttpClient.newCall(downloadRequest).execute();
-    return downloadResponse.body().byteStream();
+    final InputStream inputStream = downloadResponse.body().byteStream();
+    log.warn("Downloaded from github metadata URL {} download URL {} this {} for artifact {}",
+        metadataRequest.urlString(), downloadRequest.urlString(), IOUtils.toString(inputStream),
+        artifact);
+    return inputStream;
   }
 
   @Override
